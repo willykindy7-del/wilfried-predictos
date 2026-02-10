@@ -1,25 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WILFRIED PREDICTOS</title>
-    <style>
-        body {
-            background: #0b0f1a;
-            color: #00bfff;
-            font-family: Arial;
-            text-align: center;
-            padding-top: 100px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>WILFRIED™ PREDICTOS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    background: linear-gradient(135deg, #0b0f1a, #001f3f);
+    color: #00bfff;
+    font-family: Arial;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    margin-top: 30px;
+    text-shadow: 0 0 15px #00bfff;
+}
+
+button {
+    background: #001f3f;
+    border: 2px solid #00bfff;
+    color: #00bfff;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00bfff;
+    color: #001f3f;
+    box-shadow: 0 0 15px #00bfff;
+}
+
+#result {
+    font-size: 28px;
+    margin: 20px;
+    font-weight: bold;
+}
+
+canvas {
+    margin-top: 20px;
+    background: #0b0f1a;
+    border-radius: 10px;
+}
+</style>
 </head>
+
 <body>
 
-    <h1>⚽ WILFRIED™ PREDICTOS</h1>
-    <p>Application de prédictions e-sport FIFA</p>
+<h1>⚽ WILFRIED™ PREDICTOS</h1>
+<p>Prédictions e-sport FIFA</p>
 
-    <button onclick="alert('Prédiction générée !')">
-        PRÉDICTION
-    </button>
+<button onclick="generatePrediction()">PRÉDICTION</button>
+<button onclick="clearHistory()">EFFACER HISTORIQUE</button>
+
+<div id="result"></div>
+
+<canvas id="chart" width="300" height="200"></canvas>
+
+<script>
+let history = JSON.parse(localStorage.getItem("history")) || [];
+
+function realisticScore() {
+    let goals1 = Math.floor(Math.random() * 4);
+    let goals2 = Math.floor(Math.random() * 4);
+    return goals1 + " - " + goals2;
+}
+
+function generatePrediction() {
+    let score = realisticScore();
+    document.getElementById("result").innerHTML = "Score exact : " + score;
+
+    history.push(score);
+    localStorage.setItem("history", JSON.stringify(history));
+
+    updateChart();
+}
+
+function clearHistory() {
+    history = [];
+    localStorage.removeItem("history");
+    document.getElementById("result").innerHTML = "";
+    updateChart();
+}
+
+function updateChart() {
+    let data = history.map(s => parseInt(s.split("-")[0]));
+
+    new Chart(document.getElementById("chart"), {
+        type: "line",
+        data: {
+            labels: history,
+            datasets: [{
+                label: "Performance",
+                data: data,
+                borderColor: "#00bfff",
+                fill: false
+            }]
+        }
+    });
+}
+
+updateChart();
+</script>
 
 </body>
-  </html>
+</html>
